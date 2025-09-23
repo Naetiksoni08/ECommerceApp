@@ -1,10 +1,10 @@
 const router = require("express").Router()
-const productcontroller = require("../controllers/product.controller");
+const ProductController = require("../controllers/product.controller");
 
 
+router.get("/", ProductController.GetAllProducts); //bulk get products
+router.get("/:id", ProductController.getProductById); // show specific product
+router.post("/", ProductController.CreateProduct); // create a product
+router.put("/:id", ProductController.UpdateProduct); // update a product
+router.delete("/:id", ProductController.DeleteProduct); // delete a products 
 
-router.get("/") // get all product bulk get
-router.get("/") // get specific product
-router.post("/") // createproduct
-router.put("/") // update product
-router.delete("/") // delete product
