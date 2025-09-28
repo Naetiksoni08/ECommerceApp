@@ -42,12 +42,26 @@ module.exports.UpdateProduct = async (req, res) => {
         const productid = req.params.id;
         const { name, price, Image, description } = req.body;
 
-        const updatedproduct = await ProductModel.findByIdAndUpdate(productid, { name, price, Image, description }, { new: true });
+        if (!productid) throw new Error("product id  Required !!");
+        const data = {};
+
+        if (name) data.name = name;
+        if (price) data.price = price;
+        if (Image) data.Image = Image;
+        if (description) data.description = description;
+
+        if (Object.keys(data).length == 0) {
+            throw new Error("name,price,Image or description is Required !!"); // object is a class and usske andar .keys aur .values hai aur uske andar data pass karna hota hai fir uski length nikal lo agar equal to 0 hai that means ki bhai data is empty this is validation wala part backend level ka use joi or zod
+        }
+
+        const updatedproduct = await ProductModel.findByIdAndUpdate(productid, data, { new: true });
         api.success(res, updatedproduct);
     } catch (error) {
         api.error(res, error);
     }
 }
+ 
+
 
 
 module.exports.DeleteProduct = async (req, res) => {
