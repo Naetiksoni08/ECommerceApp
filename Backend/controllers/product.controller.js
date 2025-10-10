@@ -8,9 +8,9 @@ module.exports.CreateProduct = async (req, res) => {
         const product = await ProductModel.create({ name, price, Image, description });
         api.success(res, product);
     } catch (error) {
+        // console.log("error in creating product",error);
         api.error(res, error)
     }
-
 }
 
 
@@ -29,8 +29,10 @@ module.exports.getProductById = async (req, res) => {
 module.exports.GetAllProducts = async (req, res) => {
     try {
         const products = await ProductModel.find({}) // get all  
+        // console.log("product fetched")
         api.success(res, products);
     } catch (error) {
+        // console.log("error in bulk get");
         api.error(res, error);
     }
 }

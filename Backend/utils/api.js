@@ -10,7 +10,7 @@ const error = (res,err,message="Internal Server Error",status=500)=>{
  return res.status(status).json({
     success:false,
     message:message,
-    err:err.message
+    err:err
  })
 }
 

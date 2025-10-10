@@ -1,20 +1,74 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
-const Register = () => {
+
+const Register = (props) => {
+
+    const navigate = useNavigate();
+
+
+    const submithandler = () => {
+        navigate("/login")
+    }
+
+    const [username, setUsername] = useState("");
+    const [email, setemail] = useState("");
+    const [password, setPassword] = useState("");
+
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        try {
+            // console.log("Sending:", { username, email, password });
+            const res = await axios.post("http://localhost:5001/api/auth/register", {
+                username,
+                email,
+                password
+            })
+
+            const registeredUsername = res.data.data.user.username;
+            localStorage.setItem('username', registeredUsername);
+
+            props.setUsername(registeredUsername);
+
+            console.log("registered username", registeredUsername);
+
+            setUsername("");
+            setemail("");
+            setPassword("");
+
+        } catch (error) {
+            console.log("Error response:", error.response.data);
+
+        }
+
+    }
+
+
     return (
-        <div>
-             <fieldset className="mx-auto fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-4">
+        <form onSubmit={handleRegister} className="flex justify-center items-start min-h-screen bg-gray-20">
+            <fieldset className="mt-50 mx-auto fieldset bg-gray-800 border-base-300 rounded-box w-xs p-6">
                 <legend className="fieldset-legend text-xl">Register</legend>
 
+                <label className="label p-2">Username</label>
+                <input type="text" className="input" value={username} onChange={(e) => setUsername(e.target.value)} />
+
                 <label className="label p-2">Email</label>
-                <input type="email" className="input" placeholder="Email" />
+                <input type="email" className="input" value={email} onChange={(e) => setemail(e.target.value)} />
 
                 <label className="label p-2">Password</label>
-                <input type="password" className="input" placeholder="Password" />
+                <input type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} />
 
-                <button className="btn btn-neutral mt-4">Register</button>
+
+                <button onClick={submithandler} className="btn btn-neutral mt-4 w-full">Register</button>
+
+
+                <p className='text-center text-sm text-gray-300 mt-3'> Already have an account?{" "}
+                    <a href="/login" className='text-blue-600 hover:underline'>Sign in</a>
+                </p>
             </fieldset>
-        </div>
+        </form>
     )
 }
 
