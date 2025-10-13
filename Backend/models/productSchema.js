@@ -18,7 +18,11 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String,
         required: [false, 'Product description is not required'],
-    }
+    },
+    Review:[{
+        type:mongoose.Types.ObjectId,
+        ref:"review"
+    }] 
 
 },
     {

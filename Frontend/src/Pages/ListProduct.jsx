@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ListProduct = () => {
 
+
   const [products, Setproducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:5001/api/product', {
@@ -15,7 +18,9 @@ const ListProduct = () => {
         Setproducts(res.data.data);
       })
       .catch(err => console.log(err))
-  }, [])
+  }, []);
+
+
 
   return (
     <div className="flex flex-wrap gap-4 m-4 mt-20">
@@ -29,9 +34,7 @@ const ListProduct = () => {
             <p className="card-title">₹{product.price}</p>
             <p>{product.description}</p>
             <div className="card-actions justify-end">
-             <form action="/product/:id/show">
-             <button className="btn btn-primary">Show</button>
-             </form>
+             <button className="btn btn-primary" onClick={()=>navigate(`/product/${product._id}/show`)}>Show</button>
             </div>
           </div>
         </div>

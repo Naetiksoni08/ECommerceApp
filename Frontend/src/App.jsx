@@ -16,7 +16,7 @@ const App = () => {
   );
 
   return (
-    <div>
+    <div className='flex-grow'>
       <Navbar username={username} />
       <Routes>
 

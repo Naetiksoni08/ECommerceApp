@@ -26,7 +26,6 @@ const Navbar = (props) => {
           <Link className="btn btn-ghost text-xl" to="/">E Commerce</Link>
           <Link className="btn btn-ghost text-xl" to="/product">Products</Link>
           <Link className="btn btn-ghost text-xl" to="/product/add">Add Product</Link>
-          <Link className="btn btn-ghost text-xl" to="/product/show">Show Product</Link>
 
         </div>
         <div className="flex-none">

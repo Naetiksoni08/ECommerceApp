@@ -14,6 +14,7 @@ const error = (res,err,message="Internal Server Error",status=500)=>{
  })
 }
 
+
 module.exports = {
     success,
     error
