@@ -5,7 +5,7 @@ import Home from './Pages/Home'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './Components/Navbar'
 import Addproduct from './Pages/Add'
-import EditProduct from './Pages/Edit'
+import Editproduct from './Pages/Edit'
 import ListProduct from './Pages/ListProduct'
 import ShowProducts from './Pages/Show'
 import Footer from './Components/Footer'
@@ -26,7 +26,7 @@ const App = () => {
         <Route path='/product' element={<ListProduct />} />
         <Route path='/product/add' element={<Addproduct />} />
         <Route path='/product/:id/show' element={<ShowProducts />} />
-        <Route path='/product/:id/edit' element={<EditProduct />} />
+        <Route path='/product/edit/:id' element={<Editproduct />} />
       </Routes>
       <Footer />
     </div>

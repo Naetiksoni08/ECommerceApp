@@ -20,7 +20,7 @@ module.exports.CreateReview = async (req, res) => {
         if(!product) return api.error(res,"Product not Found",404);
            
 
-        product.review.push(review._id);
+        product.reviews.push(review._id);
         await product.save();
 
         api.success(res, review);
@@ -39,10 +39,10 @@ module.exports.getReviewsByProduct = async (req, res) => {
     try {
         const { productId } = req.params;
 
-        const product = await ProductModel.findById(productId).populate('review');
+        const product = await ProductModel.findById(productId).populate('reviews');
         if (!product) return api.error(res, "Product not found", 404);
 
-        api.success(res, product.review);
+        api.success(res, product.reviews);
 
     } catch (error) {
 
@@ -58,10 +58,12 @@ module.exports.DeleteReview = async (req, res) => {
 
        
       const review = await reviewModel.findByIdAndDelete(reviewId);
+      if (!review) return api.error(res, "Review not found", 404);
+
 
         const product = await ProductModel.findById(productId);
         if (product) {
-            product.review = product.review.filter(id => id.toString() !== reviewId);
+            product.reviews = product.reviews.filter(id => id.toString() !== reviewId);
             await product.save();
         }
 

@@ -1,101 +1,84 @@
-import React, { useState } from "react";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
 
-const EditProduct = () => {
+
+
+
+const Edit = () => {
+  const { id } =useParams(); // get product id from URL
+  const navigate = useNavigate();
+
   const [product, setProduct] = useState({
     name: "",
     price: "",
-    image: "",
+    Image: "",
     description: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitting product:", product);
-  };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`http://localhost:5001/api/product/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        });
+        setProduct(res.data.data);
+      } catch (error) {
+        console.log(error);
+
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+const handlechange=(e)=>{
+  const{name,value} = e.target;
+  setProduct((prev)=>({...prev,[name]:value}))
+}
+
+const handleSubmit=async(e)=>{
+  e.preventDefault();
+  try {
+    
+    const token = localStorage.getItem("token");
+    await axios.put(`http://localhost:5001/api/product/${id}`, product, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    navigate("/product");
+  } catch (error) {
+    console.error("Error updating product:", error);
+    
+  }
+}
 
   return (
-    <div className="flex justify-center items-center mt-10">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white p-6 rounded-lg shadow-md"
-      >
-        <h2 className="text-2xl font-semibold mb-6 text-center">Add Product</h2>
+    <form className="flex justify-center items-start min-h-screen" onSubmit={handleSubmit}>
+      <fieldset className="mt-40 mx-auto fieldset bg-gray-800 border-base-300 rounded-box w-sm shadow-xl p-6">
+        <h2 className="text-2xl font-semibold mb-6 text-center">Edit Product</h2>
 
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 font-medium mb-1">
-            Product Name
-          </label>
-          <input
-            name="name"
-            type="text"
-            id="name"
-            value={product.name}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-          />
-        </div>
+        <label className="label p-2 text-sm">Product Name</label>
+        <input type="text" className="input" name="name" value={product.name} onChange={handlechange} required />
 
-        <div className="mb-4">
-          <label htmlFor="price" className="block text-gray-700 font-medium mb-1">
-            Product Price
-          </label>
-          <input
-            name="price"
-            type="number"
-            id="price"
-            value={product.price}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-          />
-        </div>
+        <label className="label p-2 text-sm">Product Price</label>
+        <input type="number" className="input" name="price" value={product.price} onChange={handlechange} required />
 
-        <div className="mb-4">
-          <label htmlFor="image" className="block text-gray-700 font-medium mb-1">
-            Product Image
-          </label>
-          <input
-            name="image"
-            type="text"
-            id="image"
-            value={product.image}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-          />
-        </div>
+        <label className="label p-2 text-sm">Product Image</label>
+        <input type="text" className="input" name="Image" value={product.Image} onChange={handlechange} required  />
 
-        <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-700 font-medium mb-1">
-            Product Description
-          </label>
-          <textarea
-            name="description"
-            id="description"
-            rows="3"
-            value={product.description}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-          />
-        </div>
+        <label className="label p-2 text-sm">Product Description</label>
 
-        <button
-          type="submit"
-          className="w-full bg-primary text-white font-medium py-2 px-4 rounded transition-colors"
-          // hover:bg-primary-400
-        >
-          Edit Product
-        </button>
-      </form>
-    </div>
-  );
-};
+        <textarea className="textarea" name="description" value={product.description} onChange={handlechange} />
 
-export default EditProduct;
+
+        <button type="submit" className="btn btn-neutral mt-4 w-full">Edit Product</button>
+
+      </fieldset>
+    </form>
+  )
+}
+
+export default Edit
