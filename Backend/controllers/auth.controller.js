@@ -12,19 +12,19 @@ module.exports.login = async (req, res) => {
         const { username, password } = req.body;
 
         if (!username)
-            return res.status(400).json({ success: false, message: "username required" });
+            return loginapi.usererror(res, "Username is required!");
         if (!password)
-            return res.status(400).json({ success: false, message: "password required" });
+            return loginapi.usererror(res, "Password is required!");
 
         const user = await UserModel.findOne({ username });
 
         if (!user) {
-            return loginapi.usererror(res, "Username or Password is Incorrect")
+            return loginapi.usererror(res, "Invalid username or password!");
         }
 
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
-            return loginapi.usererror(res, "Username or Password is Incorrect");
+            return loginapi.usererror(res, "Invalid username or password!");
         }
 
         const token = jwt.sign({ id: user._id, username }, JWT_SECRET, {
@@ -43,6 +43,7 @@ module.exports.login = async (req, res) => {
                 }
             }
         })
+        return loginapi.success(res, "Logged in successfully!");
 
     } catch (error) {
         return loginapi.error(res, "Internal Server Error", error);
@@ -58,12 +59,13 @@ module.exports.login = async (req, res) => {
 module.exports.register = async (req, res) => {
     try {
         const { username, password, email } = req.body;
+
         if (!username)
-            return res.status(400).json({ success: false, message: "Username required" });
+            return registerapi.error(res, "Username required", null, 400);
         if (!password)
-            return res.status(400).json({ success: false, message: "Password required" });
+            return registerapi.error(res, "Password required", null, 400);
         if (!email)
-            return res.status(400).json({ success: false, message: "Email required" });
+            return registerapi.error(res, "Email required", null, 400);
 
 
         const user = await UserModel.findOne({ username });
@@ -74,17 +76,15 @@ module.exports.register = async (req, res) => {
 
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        await UserModel.create({
+       const newUser =  await UserModel.create({
             username,
             email,
             password: hashedPassword
         });
 
-        registerapi.success(res);
-
+        registerapi.success(res, "User created successfully", 200, { user: { username: newUser.username, email: newUser.email, _id: newUser._id } });
     } catch (error) {
-
-        return registerapi.error(res);
+        return registerapi.error(res, "Internal Server Error", error);
 
     }
 }

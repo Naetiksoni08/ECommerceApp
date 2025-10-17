@@ -1,7 +1,7 @@
 const success = (res,data,message="Success",status=200)=>{
    return res.status(status).json({
     success:true,
-    message:message,
+    message,
     data
    })
 }
@@ -9,7 +9,7 @@ const success = (res,data,message="Success",status=200)=>{
 const error = (res,err,message="Internal Server Error",status=500)=>{
  return res.status(status).json({
     success:false,
-    message:message,
+    message,
     err:err
  })
 }

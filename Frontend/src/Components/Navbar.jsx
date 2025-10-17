@@ -1,12 +1,16 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+
+
+
 
 const Navbar = (props) => {
 
   const handleLogout = () => {
-    localStorage.removeItem('username')
+    localStorage.removeItem('username');
     props.username('');
-  }
+
+  };
 
 
   const NameInitials = props.username
@@ -14,6 +18,7 @@ const Navbar = (props) => {
       .split(' ')
       .map(word => word[0])
       .join('')
+      .slice(0, 2)
       .toUpperCase()
     : <img
       src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
@@ -43,7 +48,7 @@ const Navbar = (props) => {
                 <span className="text-lg font-bold">8 Items</span>
                 <span className="text-info">Subtotal: $999</span>
                 <div className="card-actions">
-                  <button className="btn btn-primary btn-block">View cart</button>
+                  <button className="btn btn-primary btn-block" >View cart</button>
                 </div>
               </div>
             </div>
@@ -51,7 +56,8 @@ const Navbar = (props) => {
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="rounded-full">
-                <p className='text-xl cursor-pointer font-medium'>{NameInitials}</p>
+                <p className='text-xl font-medium flex items-center justify-center h-10 w-10 rounded-full text-white'>{NameInitials}</p>
+
               </div>
             </div>
 
@@ -60,16 +66,14 @@ const Navbar = (props) => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
               <li><p className='text-sm'>{props.username}</p></li>
-              <form action="/login">
               <li>
-                <button onClick={handleLogout}>
-                  Logout
-                </button>
+                <form action="/login">
+                  <button onClick={handleLogout}>
+                    Logout
+                  </button>
+                </form>
               </li>
-              </form>
             </ul>
-
-
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const ListProduct = () => {
 
@@ -15,7 +16,8 @@ const ListProduct = () => {
       }
     })
       .then(res => {
-        Setproducts(res.data.data);
+        Setproducts(res.data.data.reverse());
+
       })
       .catch(err => console.log(err))
   }, []);

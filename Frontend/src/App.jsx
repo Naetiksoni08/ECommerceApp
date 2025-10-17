@@ -9,6 +9,8 @@ import Editproduct from './Pages/Edit'
 import ListProduct from './Pages/ListProduct'
 import ShowProducts from './Pages/Show'
 import Footer from './Components/Footer'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [username, setUsername] = useState(
@@ -28,6 +30,16 @@ const App = () => {
         <Route path='/product/:id/show' element={<ShowProducts />} />
         <Route path='/product/edit/:id' element={<Editproduct />} />
       </Routes>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
       <Footer />
     </div>
   )

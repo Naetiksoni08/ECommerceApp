@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 const Register = (props) => {
@@ -8,9 +9,9 @@ const Register = (props) => {
     const navigate = useNavigate();
 
 
-    const submithandler = () => {
-        navigate("/login")
-    }
+  
+       
+
 
     const [username, setUsername] = useState("");
     const [email, setemail] = useState("");
@@ -32,14 +33,16 @@ const Register = (props) => {
 
             props.setUsername(registeredUsername);
 
-            console.log("registered username", registeredUsername);
+            toast.success("Registered Successfully !!");
 
             setUsername("");
             setemail("");
             setPassword("");
+            navigate("/login")
 
         } catch (error) {
-            console.log("Error response:", error.response.data);
+            
+            toast.error(error.response?.data?.message || "Registration failed. Please try again.");
 
         }
 
@@ -61,7 +64,7 @@ const Register = (props) => {
                 <input type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} />
 
 
-                <button onClick={submithandler} className="btn btn-neutral mt-4 w-full">Register</button>
+                <button className="btn btn-neutral mt-4 w-full">Register</button>
 
 
                 <p className='text-center text-sm text-gray-300 mt-3'> Already have an account?{" "}

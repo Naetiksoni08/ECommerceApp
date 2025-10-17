@@ -9,14 +9,14 @@
 const usererror = (res,message="Username or Password is Incorrect",status=401)=>{
     return res.status(status).json({
         success:false,
-        message:message
+        message,
     })
 }
 
  const error = (res,message="Internal Server Error",err,status=500)=>{
     return res.status(status).json({
         success:false,
-        message:message,
+        message,
         error:err
     })
  }

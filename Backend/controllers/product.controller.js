@@ -8,8 +8,7 @@ module.exports.CreateProduct = async (req, res) => {
         const product = await ProductModel.create({ name, price, Image, description });
         api.success(res, product);
     } catch (error) {
-        // console.log("error in creating product",error);
-        api.error(res, error)
+        api.error(res, error, "Failed to create product");
     }
 }
 
@@ -18,10 +17,9 @@ module.exports.getProductById = async (req, res) => {
     try {
         const productid = req.params.id;
         const Product = await ProductModel.findById(productid);
-        // populate({path:"createdBy",select:"Fullname"});
-        api.success(res, Product);
+        api.success(res, Product, "Product fetched successfully!");
     } catch (error) {
-        api.error(res, error);
+        api.error(res, error, "Failed to fetch product");
     }
 
 }
@@ -29,11 +27,9 @@ module.exports.getProductById = async (req, res) => {
 module.exports.GetAllProducts = async (req, res) => {
     try {
         const products = await ProductModel.find({}) // get all  
-        // console.log("product fetched")
-        api.success(res, products);
+        api.success(res, products, "Products fetched successfully!");
     } catch (error) {
-        // console.log("error in bulk get");
-        api.error(res, error);
+        api.error(res, error, "Failed to fetch products");
     }
 }
 
@@ -57,9 +53,9 @@ module.exports.UpdateProduct = async (req, res) => {
         }
 
         const updatedproduct = await ProductModel.findByIdAndUpdate(productid, data, { new: true });
-        api.success(res, updatedproduct);
+        api.success(res, updatedproduct, "Product updated successfully!");
     } catch (error) {
-        api.error(res, error);
+        api.error(res, error, "Failed to update product");
     }
 }
  
@@ -70,9 +66,9 @@ module.exports.DeleteProduct = async (req, res) => {
     try {
         const productid = req.params.id;
         const deletedProduct = await ProductModel.findByIdAndDelete(productid);
-        api.success(res, deletedProduct);
+        api.success(res, deletedProduct, "Product deleted successfully!");
     } catch (error) {
-        api.error(res, error);
+        api.error(res, error, "Failed to delete product");
     }
 }
 

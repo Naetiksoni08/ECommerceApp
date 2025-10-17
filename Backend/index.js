@@ -5,26 +5,31 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT;
 const connectdb = require("./config/db");
-const { auth : authMiddleware} = require("./middlewares/auth");
+const { auth: authMiddleware } = require("./middlewares/auth");
+const paymentRoutes = require('./api/paymentapi');
 
 
 
 connectdb();
 
+
 app.use(cors());
 app.use(express.json());
-app.use("/api",router);
 
 
-app.use("/healthcheck",(req,res)=>{
+app.use("/api", router);
+app.use("/api/payment", paymentRoutes);
+//POST http://localhost:5001/api/payment/order
+
+app.use("/healthcheck", (req, res) => {
     res.send("hello");
 })
 
-app.use("/",authMiddleware,(req,res)=>{
+app.use("/", authMiddleware, (req, res) => {
     res.send("working fine");
 })
 
 
-app.listen(PORT,()=>{
-    console.log("Server is up at port",`${PORT}`);
+app.listen(PORT, () => {
+    console.log("Server is up at port", `${PORT}`);
 })

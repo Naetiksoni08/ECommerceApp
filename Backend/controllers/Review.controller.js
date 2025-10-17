@@ -10,20 +10,15 @@ module.exports.CreateReview = async (req, res) => {
         const{productId} = req.params;
 
        if(!productId)  return api.error(res,"Product Id required",400);
-       
-
         const review = await reviewModel.create({ text, rating });
 
         const product = await ProductModel.findById(productId);
-
-      
         if(!product) return api.error(res,"Product not Found",404);
            
-
         product.reviews.push(review._id);
         await product.save();
 
-        api.success(res, review);
+        api.success(res, review,"Review submitted successfully!");
 
     } catch (error) {
 
@@ -42,11 +37,11 @@ module.exports.getReviewsByProduct = async (req, res) => {
         const product = await ProductModel.findById(productId).populate('reviews');
         if (!product) return api.error(res, "Product not found", 404);
 
-        api.success(res, product.reviews);
+        api.success(res, product.reviews, "Reviews fetched successfully");
 
     } catch (error) {
 
-        api.error(res, error);
+        api.error(res,error);
     }
 };
 
@@ -67,7 +62,8 @@ module.exports.DeleteReview = async (req, res) => {
             await product.save();
         }
 
-        api.success(res, null, "Review deleted successfully");
+        api.success(res, null, "Review deleted successfully"); 
+        
     } catch (err) {
 
         api.error(res, err);

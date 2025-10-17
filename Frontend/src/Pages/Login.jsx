@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 const Login = (props) => {
@@ -18,7 +19,6 @@ const Login = (props) => {
             const res = await axios.post("http://localhost:5001/api/auth/login",{
                 username,
                 password
-
             });
             const token = res.data.data.token;
             const LoggedInUsername = res.data.data.user.username;
@@ -27,13 +27,12 @@ const Login = (props) => {
             localStorage.setItem('username', LoggedInUsername);
 
             props.setUsername(LoggedInUsername);
-
-            console.log("token set successfully", token , LoggedInUsername);
+            toast.success(`Welcome ${LoggedInUsername} !!`);
 
             navigate("/product")
 
         } catch (error) {
-            console.log(error);
+            toast.error(error.response?.data?.message || "Login failed. Please try again.");
             
         }
 
