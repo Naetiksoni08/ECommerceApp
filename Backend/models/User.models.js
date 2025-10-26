@@ -10,9 +10,16 @@ const userSchema = mongoose.Schema({
   email: String,
   password: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  cart: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Product"
+    }
+  ]
 })
+
 
 
 const UserModel = mongoose.model("User", userSchema);

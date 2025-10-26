@@ -20,9 +20,9 @@ const ShowProducts = () => {
     axios.get(`http://localhost:5001/api/product/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
-      }      
+      }
     })
-    .then(res => SetProduct(res.data.data))
+      .then(res => SetProduct(res.data.data))
       .catch(err => console.log(err))
 
     axios.get(`http://localhost:5001/api/review/product/${id}/reviews`, {
@@ -33,7 +33,7 @@ const ShowProducts = () => {
       .then(res => SetReviews(res.data.data || []))
       .catch(err => console.log(err));
 
-  }, [id]); 
+  }, [id]);
   // product is dependent upon product id so we are saying react that whenever the id changes re fetch the product basically re run the use effect tho if u dont include id in the dependency array then also it will work normal and fine but it is a good practice so remember whenever ur product is dependent on something u should pass that thing in the dependency array
 
 
@@ -48,7 +48,7 @@ const ShowProducts = () => {
         setnewText("");
         setNewRating(5);
         toast.success(res.data.message || "Review submitted successfully!");
-  
+
         // Fetch latest reviews
         return axios.get(`http://localhost:5001/api/review/product/${id}/reviews`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -70,7 +70,7 @@ const ShowProducts = () => {
 
   const deleteReview = async (reviewId) => {
     try {
-     const res =  await axios.delete(`http://localhost:5001/api/review/product/${id}/reviews/${reviewId}`, {
+      const res = await axios.delete(`http://localhost:5001/api/review/product/${id}/reviews/${reviewId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const updatedReviews = reviews.filter((rev) => rev._id !== reviewId);
@@ -136,6 +136,20 @@ const ShowProducts = () => {
 
   };
 
+  const CartSubmitHandler = async () => {
+    try {
+      const { data } = await axios.post("http://localhost:5001/api/cart/add", { productid:id },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        toast.success("Product Added To Cart");
+        navigate("/product");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to add to cart");
+
+    }
+  }
+
 
   return (
     <div className="flex ml-40 md:justify-items-start mt-30 gap-50">
@@ -150,7 +164,7 @@ const ShowProducts = () => {
           <p>{product.description}</p>
           <div className="card-actions justify-end mx-auto">
             <button className="btn btn-primary" onClick={handleBuyNow}>Buy Now</button>
-            <button className="btn btn-secondary">Add to Cart</button>
+            <button className="btn btn-secondary" onClick={CartSubmitHandler}>Add to Cart</button>
             <button className="btn btn-accent" onClick={() => navigate(`/product/edit/${id}`)}>Edit</button>
             <button className="btn btn-warning" onClick={() => (deleteProduct())}>Delete</button>
           </div>
