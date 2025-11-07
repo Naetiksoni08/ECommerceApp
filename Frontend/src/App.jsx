@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Login from './Pages/Login'
 import Register from './Pages/Register'
 import Home from './Pages/Home'
@@ -13,43 +13,57 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cart from './Pages/Cart'
 import axios from 'axios'
+import ProtectedRoute from './Components/ProtectedRoute'
+import { AuthContext } from './Context/AuthContext'
 
 const App = () => {
-  const [username, setUsername] = useState(
-    localStorage.getItem('username') || ''
-  );
+  const { user } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState([]);
 
+
+
+  const fetchCart = async () => {
+    if (!user) return;
+    try {
+      const res = await axios.get("http://localhost:5001/api/cart", {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      setCartItems(res.data.data || []);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to fetch cart");
+    }
+  };
+
   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const res = await axios.get("http://localhost:5001/api/cart", {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        setCartItems(res.data.data || []);
-      } catch (err) {
-        toast.error(err.response?.data?.message || "Failed to fetch cart");
-      }
-    };
-    fetchCart();
-  }, []);
+    if (user) {
+      fetchCart();
+    } else {
+      setCartItems([]);
+    }
+  }, [user]);
+
+
 
 
 
   return (
-    <div className='flex-grow'>
-      <Navbar username={username} cartItems={cartItems} />
+    <div className="min-h-screen flex flex-col">
+      <Navbar cartItems={cartItems} setCartItems={setCartItems} />
+      <div className="flex-1">
       <Routes>
+        {/* public routes */}
+        <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<Login />} />
 
-        <Route path='/' element={<Home />} />
-        <Route path='/register' element={<Register setUsername={setUsername} />} />
-        <Route path='/login' element={<Login setUsername={setUsername} />} />
-        <Route path='/product' element={<ListProduct />} />
-        <Route path='/product/add' element={<Addproduct />} />
-        <Route path="/product/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
-        <Route path='/product/:id/show' element={<ShowProducts />} />
-        <Route path='/product/edit/:id' element={<Editproduct />} />
+        {/* Protected Routes */}
+        <Route path='/' element={<ProtectedRoute> <Home /> </ProtectedRoute>} />
+        <Route path='/product' element={<ProtectedRoute> <ListProduct /> </ProtectedRoute>} />
+        <Route path='/product/add' element={<ProtectedRoute> <Addproduct /> </ProtectedRoute>} />
+        <Route path="/product/cart" element={<ProtectedRoute> <Cart cartItems={cartItems} setCartItems={setCartItems} fetchCart={fetchCart} /> </ProtectedRoute>} />
+        <Route path='/product/:id/show' element={<ProtectedRoute> <ShowProducts fetchCart={fetchCart} /></ProtectedRoute>} />
+        <Route path='/product/edit/:id' element={<ProtectedRoute> <Editproduct /> </ProtectedRoute>} />
       </Routes>
+      </div>
 
       <ToastContainer
         position="top-right"

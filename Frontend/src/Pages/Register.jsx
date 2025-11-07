@@ -9,10 +9,6 @@ const Register = (props) => {
     const navigate = useNavigate();
 
 
-  
-       
-
-
     const [username, setUsername] = useState("");
     const [email, setemail] = useState("");
     const [password, setPassword] = useState("");

@@ -5,34 +5,45 @@ import { toast } from 'react-toastify';
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
 
+
+    const fetchCart = async () => {
+        try {
+            const res = await axios.get("http://localhost:5001/api/cart", {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            setCartItems(res.data.data || []);
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to fetch cart");
+        }
+    };
+
     useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const res = await axios.get("http://localhost:5001/api/cart", {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                });
-                setCartItems(res.data.data || []);
-            } catch (err) {
-                toast.error(err.response?.data?.message || "Failed to fetch cart");
-            }
-        };
         fetchCart();
     }, []);
 
 
+
     const handleRemove = async (productid) => {
         try {
-            await axios.delete(`http://localhost:5001/api/cart/remove/${productid}`, {
+            const { data } = await axios.delete(`http://localhost:5001/api/cart/removed/${productid}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            })
-            setCartItems(cartItems.filter(item => item._id.toString() !== productid));
-            toast.success("Removed from cart");
+            });
+
+            if (data && data.success) {
+                toast.success("Removed from cart");
+                await fetchCart();
+            } else {
+                toast.error(data?.message || "Failed to remove");
+            }
+
+            setCartItems(cartItems.filter(item => item._id !== productid));
+            await fetchCart();
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to remove");
         }
     }
     return (
-        <div className="mt-20 flex flex-col items-center gap-6">
+        <div className="mt-20 flex flex-col items-center gap-6 ">
             {!cartItems || cartItems.length === 0 ? (
                 <p className="text-xl font-semibold">Your cart is empty</p>
             ) : (

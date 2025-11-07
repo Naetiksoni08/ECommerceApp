@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     price: {
         type: Number,
         min: 0,
-        max: 1000000,
+        max: 10000000000000,
         required: [true, "Product price is required"]
     },
     Image: {

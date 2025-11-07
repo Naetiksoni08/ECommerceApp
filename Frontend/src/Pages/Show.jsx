@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify';
+import ReactStars from "react-rating-stars-component";
 
 
 const ShowProducts = () => {
@@ -87,7 +88,7 @@ const ShowProducts = () => {
 
   const deleteProduct = async () => {
     try {
-      await axios.delete(`http://localhost:5001/api/product/${id}`, {
+      const { data } = await axios.delete(`http://localhost:5001/api/product/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       })
       toast.success(data.message || "Product deleted successfully!");
@@ -138,14 +139,22 @@ const ShowProducts = () => {
 
   const CartSubmitHandler = async () => {
     try {
-      const { data } = await axios.post("http://localhost:5001/api/cart/add", { productid:id },
+      const { data } = await axios.post("http://localhost:5001/api/cart/add", { productid: id },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
+
+
+      if (data && data.success) {
         toast.success("Product Added To Cart");
-        navigate("/product");
+      } else {
+        toast.error(data?.message || "Failed to add to cart");
+      }
+
+
+      navigate("/product");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to add to cart");
+      toast.warn(error.response?.data?.message || "Failed to add to cart");
 
     }
   }
@@ -153,68 +162,122 @@ const ShowProducts = () => {
 
   return (
     <div className="flex ml-40 md:justify-items-start mt-30 gap-50">
-      {/* left part */}
+
+      {/* Left part */}
       <div className="card bg-base-100 w-full md:w-1/3 shadow-xl h-1/2">
         <figure>
-          <img src={product.Image || "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"} alt={product.name} />
+          <img
+            src={product.Image || "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"}
+            alt={product.name}
+          />
         </figure>
+
         <div className="card-body">
           <h2 className="card-title">{product.name}</h2>
           <h2 className="card-title">₹{product.price}</h2>
           <p>{product.description}</p>
+
           <div className="card-actions justify-end mx-auto">
-            <button className="btn btn-primary" onClick={handleBuyNow}>Buy Now</button>
-            <button className="btn btn-secondary" onClick={CartSubmitHandler}>Add to Cart</button>
-            <button className="btn btn-accent" onClick={() => navigate(`/product/edit/${id}`)}>Edit</button>
-            <button className="btn btn-warning" onClick={() => (deleteProduct())}>Delete</button>
+            <button className="btn btn-primary" onClick={handleBuyNow}>
+              Buy Now
+            </button>
+
+            <button className="btn btn-secondary" onClick={CartSubmitHandler}>
+              Add to Cart
+            </button>
+
+            <button
+              className="btn btn-accent"
+              onClick={() => navigate(`/product/edit/${id}`)}
+            >
+              Edit
+            </button>
+
+            <button
+              className="btn btn-warning"
+              onClick={() => deleteProduct()}
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
 
-      {/* right part */}
-      <div className="ml-10 w-1/2 ">
+      {/* Right part */}
+      <div className="ml-10 w-1/2">
         <h1 className="text-2xl font-bold mb-5">Leave a Review</h1>
-
-        <div className="starability-basic">
-          <input type="radio" id="rate5" name="rating" value="5" onChange={(e) => setNewRating(Number(e.target.value))} />
-          <label htmlFor="rate5" title="Amazing">5 stars</label>
-
-          <input type="radio" id="rate4" name="rating" value="4" onChange={(e) => setNewRating(Number(e.target.value))} />
-          <label htmlFor="rate4" title="Very good">4 stars</label>
-
-          <input type="radio" id="rate3" name="rating" value="3" onChange={(e) => setNewRating(Number(e.target.value))} />
-          <label htmlFor="rate3" title="Average">3 stars</label>
-
-          <input type="radio" id="rate2" name="rating" value="2" onChange={(e) => setNewRating(Number(e.target.value))} />
-          <label htmlFor="rate2" title="Not good">2 stars</label>
-
-          <input type="radio" id="rate1" name="rating" value="1" onChange={(e) => setNewRating(Number(e.target.value))} />
-          <label htmlFor="rate1" title="Terrible">1 star</label>
-        </div>
+        <ReactStars
+          count={5}
+          value={newRating}
+          onChange={(newValue) => {
+            console.log("New rating:", newValue);
+            setNewRating(newValue);
+          }}
+          size={40}
+          isHalf={true}
+          edit={true}
+          activeColor="#facc15"
+          color="#4b5563"
+          emptyIcon={<i className="far fa-star" />}
+          halfIcon={<i className="fa fa-star-half-alt" />}
+          filledIcon={<i className="fa fa-star" />}
+        />
         <textarea
-          className='textarea mt-5' rows={3} placeholder="Write your review..." value={newText} onChange={(e) => setnewText(e.target.value)}>
-        </textarea>
-        <button onClick={submitReview} className='btn btn-primary block mt-4'>Submit</button>
+          className="textarea mt-5"
+          rows={3}
+          placeholder="Write your review..."
+          value={newText}
+          onChange={(e) => setnewText(e.target.value)}
+        ></textarea>
 
-
+        <button
+          onClick={submitReview}
+          className="btn btn-primary block mt-4"
+        >
+          Submit
+        </button>
 
         <h2 className="text-xl font-bold mt-10 mb-3">Customer Reviews</h2>
+
         {reviews.length === 0 ? (
           <p>No reviews yet. Be the first to review!</p>
         ) : (
           reviews.map((rev, index) => (
-            <div key={index} className="p-2 rounded-lg mb-5 bg-gray-900 w-80 shadow-lg">
+            <div
+              key={index}
+              className="p-2 rounded-lg mb-5 bg-gray-900 w-80 shadow-lg"
+            >
               <div className="flex items-center gap-2">
-                <p className="text-yellow-700">⭐ {rev.rating}</p>
+                {/* ⭐ Display review stars */}
+                <div className="flex items-center gap-2">
+                  <ReactStars
+                    count={5}
+                    value={rev.rating}
+                    edit={false}
+                    size={20}
+                    isHalf={true}
+                    activeColor="#facc15"
+                    color="#4b5563"
+                    emptyIcon={<i className="far fa-star" />}
+                    halfIcon={<i className="fa fa-star-half-alt" />}
+                    filledIcon={<i className="fa fa-star" />}
+                  />
+                </div>
               </div>
-              <p className=" mt-1 text-white">{rev.text}</p>
-              <button className='rounded-xl text-sm bg-red-900 p-3 mt-3 cursor-pointer' onClick={() => deleteReview(rev._id)}>Delete</button>
+              <p className="mt-1 text-white">{rev.text}</p>
+
+              <button
+                className="rounded-xl text-sm bg-red-900 p-3 mt-3 cursor-pointer"
+                onClick={() => deleteReview(rev._id)}
+              >
+                Delete
+              </button>
             </div>
           ))
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ShowProducts
+export default ShowProducts;

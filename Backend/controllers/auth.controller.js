@@ -76,7 +76,7 @@ module.exports.register = async (req, res) => {
 
 
         const hashedPassword = await bcrypt.hash(password, 10);
-       const newUser =  await UserModel.create({
+        const newUser = await UserModel.create({
             username,
             email,
             password: hashedPassword
@@ -88,3 +88,18 @@ module.exports.register = async (req, res) => {
 
     }
 }
+
+// module.exports.getCurrentUser = async (req, res) => {
+//     try {
+//         const user = await UserModel.findById(req.user.id).select("-password");
+//         if (!user) {
+//             return res.status(404).json({ success: false, message: "User not found" });
+//         }
+//         return res.status(200).json({
+//             success: true,
+//             user,
+//         });
+//     } catch (error) {
+//         return res.status(500).json({ success: false, message: "Server Error", error });
+//     }
+// };
