@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../Context/AuthContext';
+import { toast } from 'react-toastify';
 
 
 
@@ -8,7 +9,6 @@ const Navbar = ({ cartItems, setCartItems }) => {
   const navigate = useNavigate();
 
   const { user, Logout } = useContext(AuthContext);
-  // const [showdropdown, setShowDropdown] = useState(false);
 
   const handleLogout = () => {
     Logout();
@@ -24,18 +24,30 @@ const Navbar = ({ cartItems, setCartItems }) => {
   const clickViewcartHandler = () => {
     navigate("/product/cart");
   }
+  const viewproduct=()=>{
+    if(!user) {
+    toast.warning("Please log in first to add a product !!")
+  }
+}
+
   return (
     <>
       <div className="navbar bg-gray-800 shadow-sm  fixed top-0 left-0 right-0 z-50">
         <div className="flex-1">
-          <Link className="btn btn-ghost text-xl" to="/">E Commerce</Link>
+          <Link className="btn btn-ghost text-xl" to="/">ShopEase</Link>
+
+          {user && (
+            <>
           <Link className="btn btn-ghost text-xl" to="/product">Products</Link>
-          <Link className="btn btn-ghost text-xl" to="/product/add">Add Product</Link>
-
-
-          {/* Cart */}
+          <Link className="btn btn-ghost text-xl" to="/product/add" onClick={viewproduct}>Add Product</Link>
+          </>
+            )}
         </div>
+
+         {/* Cart */}
+
         <div className="flex-none">
+        {user && (
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
               <div className="indicator">
@@ -59,6 +71,7 @@ const Navbar = ({ cartItems, setCartItems }) => {
               </div>
             </div>
           </div>
+        )}
 
 
           {/* Avatar */}

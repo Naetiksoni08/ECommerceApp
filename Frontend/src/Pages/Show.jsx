@@ -159,7 +159,6 @@ const ShowProducts = () => {
     }
   }
 
-
   return (
     <div className="flex ml-40 md:justify-items-start mt-30 gap-50">
 
@@ -281,3 +280,6 @@ const ShowProducts = () => {
 };
 
 export default ShowProducts;
+
+
+

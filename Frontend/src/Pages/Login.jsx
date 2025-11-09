@@ -35,7 +35,7 @@ const Login = (props) => {
 
             // props.setUsername(LoggedInUsername);
             toast.success(`Welcome ${LoggedInUsername}!!`);
-            navigate("/product")
+            navigate("/")
 
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed. Please try again.");

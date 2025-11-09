@@ -43,7 +43,6 @@ module.exports.login = async (req, res) => {
                 }
             }
         })
-        return loginapi.success(res, "Logged in successfully!");
 
     } catch (error) {
         return loginapi.error(res, "Internal Server Error", error);

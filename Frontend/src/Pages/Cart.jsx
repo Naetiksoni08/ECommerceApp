@@ -43,7 +43,7 @@ const Cart = () => {
         }
     }
     return (
-        <div className="mt-20 flex flex-col items-center gap-6 ">
+        <div className="mt-30 flex flex-col items-center gap-6 ">
             {!cartItems || cartItems.length === 0 ? (
                 <p className="text-xl font-semibold">Your cart is empty</p>
             ) : (

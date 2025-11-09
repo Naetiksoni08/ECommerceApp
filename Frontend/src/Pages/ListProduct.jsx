@@ -94,7 +94,7 @@ const ListProduct = () => {
             <p className="card-title">₹{product.price}</p>
             <p>{product.description}</p>
             <div className="card-actions justify-end">
-              <button className="btn btn-primary" onClick={() => navigate(`/product/${product._id}/show`)}>Show</button>
+              <button className="btn btn-primary" onClick={() => navigate(`/product/${product._id}/show`)}>Buy Now</button>
             </div>
           </div>
         </div>

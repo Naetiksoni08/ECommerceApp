@@ -44,19 +44,19 @@ const App = () => {
 
 
 
-
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar cartItems={cartItems} setCartItems={setCartItems} />
       <div className="flex-1">
       <Routes>
         {/* public routes */}
+        <Route path='/' element={ <Home /> } />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
+       
 
         {/* Protected Routes */}
-        <Route path='/' element={<ProtectedRoute> <Home /> </ProtectedRoute>} />
+    
         <Route path='/product' element={<ProtectedRoute> <ListProduct /> </ProtectedRoute>} />
         <Route path='/product/add' element={<ProtectedRoute> <Addproduct /> </ProtectedRoute>} />
         <Route path="/product/cart" element={<ProtectedRoute> <Cart cartItems={cartItems} setCartItems={setCartItems} fetchCart={fetchCart} /> </ProtectedRoute>} />
